@@ -173,7 +173,6 @@
             border: 0;
         }
 
-        /* ТАБЛИЦА ДОКУМЕНТОВ — ПРОСТАЯ И НАДЁЖНАЯ */
         .docs-table {
             width: 100%;
             border-collapse: collapse;
@@ -195,19 +194,9 @@
             border-bottom: 1px solid #E5E7EB;
             font-size: 13px;
         }
-        .docs-table tr:last-child td {
-            border-bottom: none;
-        }
-        .docs-table tr:nth-child(even) {
-            background: #F8FAFC;
-        }
-        .docs-table a {
-            color: #2563EB;
-            text-decoration: none;
-        }
-        .docs-table a:hover {
-            text-decoration: underline;
-        }
+        .docs-table tr:last-child td { border-bottom: none; }
+        .docs-table tr:nth-child(even) { background: #F8FAFC; }
+        .docs-table a { color: #2563EB; text-decoration: none; }
 
         .contacts-two-columns { display: flex; flex-wrap: wrap; gap: 40px; margin: 40px 0; }
         .contacts-col { flex: 1; background: #F8FAFC; padding: 28px; border-radius: 20px; transition: 0.3s; }
@@ -272,10 +261,22 @@
             flex-wrap: wrap;
             gap: 15px;
             border: 1px solid #E5E7EB;
+            transition: 0.2s;
         }
-        .news-date { color: #6B7280; font-size: 14px; min-width: 110px; }
+        .news-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .news-date { color: #6B7280; font-size: 14px; min-width: 110px; font-weight: 500; }
         .news-title { flex: 1; font-weight: 500; }
         .news-link { color: #2563EB; text-decoration: none; font-weight: 500; cursor: pointer; }
+
+        .news-count {
+            text-align: center;
+            font-size: 14px;
+            color: #6B7280;
+            margin-bottom: 20px;
+        }
 
         .footer {
             background: #1E3A8A;
@@ -313,6 +314,53 @@
         .go-top.show { opacity: 1; visibility: visible; }
         .go-top:hover { background: #1E40AF; transform: translateY(-3px); }
 
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            max-width: 600px;
+            width: 90%;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+        .modal-close {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .modal-close span {
+            cursor: pointer;
+            font-size: 28px;
+            color: #666;
+        }
+        .modal-title {
+            color: #1E3A8A;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .modal-date {
+            color: #6B7280;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .modal-text {
+            color: #1F2937;
+            line-height: 1.6;
+        }
+
         @media (max-width: 768px) {
             .header { padding: 16px 20px; }
             .nav { display: none; width: 100%; flex-direction: column; text-align: center; gap: 16px; margin-top: 15px; }
@@ -328,6 +376,8 @@
             .go-top { bottom: 20px; right: 20px; width: 45px; height: 45px; font-size: 20px; }
             .map { height: 200px; }
             .form-row { flex-direction: column; gap: 0; }
+            .news-date { margin-bottom: 5px; }
+            .modal-title { font-size: 20px; }
         }
     </style>
 </head>
@@ -370,11 +420,11 @@
                 <div class="card-btn" onclick="showPage('contacts')"><h3>Контакты</h3><p>Схема города</p></div>
                 <div class="card-btn" onclick="showPage('feedback')"><h3>Обращения</h3><p>Написать главе</p></div>
             </div>
-            <div class="alert">⚠️ ВАЖНО: 1 июля 2026 года в 14:00 прямая линия с главой администрации. Телефон: 8 (347) 123-45-67</div>
+            <div class="alert">⚠️ ВАЖНО: 1 июля 2026 года в 14:00 прямая линия с главой администрации. Телефон: 8 (34751) 2-10-03</div>
             <h2 class="section-title">Последние новости</h2>
             <div class="news-grid">
-                <div class="news-card"><div class="news-text">В Баймаке открылся новый скейт-парк</div><div class="date">15 июня 2026</div></div>
-                <div class="news-card"><div class="news-text">График отключения горячей воды на лето 2026</div><div class="date">10 июня 2026</div></div>
+                <div class="news-card"><div class="news-text">В Баймаке стартовал летний фестиваль «Курай — душа Башкортостана»</div><div class="date">25 июня 2026</div></div>
+                <div class="news-card"><div class="news-text">График отключения горячей воды на лето 2026 опубликован</div><div class="date">10 июня 2026</div></div>
                 <div class="news-card"><div class="news-text">Приём граждан переносится на 25 июня</div><div class="date">5 июня 2026</div></div>
             </div>
             <div class="all-link"><a onclick="showPage('news')">Все новости →</a></div>
@@ -389,8 +439,17 @@
             </div>
             <h2 class="section-title">Контакты</h2>
             <div class="contacts-grid">
-                <div class="contact-card"><p><strong>Адрес:</strong> ул. Горького, 26, г. Баймак</p><p><strong>Телефон:</strong> 8 (347) 123-45-67</p><p><strong>Email:</strong> adm@baimak.ru</p></div>
-                <div class="contact-card"><p><strong>Режим работы:</strong> Пн–пт: 8:00 – 18:00</p><p><strong>Обед:</strong> 12:30 – 14:00</p><p><strong>Приём граждан:</strong> Вт, Чт с 10:00 до 17:00</p></div>
+                <div class="contact-card">
+                    <p><strong>Адрес:</strong> 453631, Республика Башкортостан, г. Баймак, ул. Горького, 26</p>
+                    <p><strong>Телефон:</strong> 8 (34751) 2-10-03</p>
+                    <p><strong>Факс:</strong> 8 (34751) 2-12-41</p>
+                    <p><strong>Email:</strong> adm@baimak.bashkortostan.ru</p>
+                </div>
+                <div class="contact-card">
+                    <p><strong>Режим работы:</strong> Пн–чт: 9:00 – 18:00, Пт: 9:00 – 16:45</p>
+                    <p><strong>Обед:</strong> 13:00 – 13:45</p>
+                    <p><strong>Приём граждан:</strong> Вт, Чт с 10:00 до 17:00</p>
+                </div>
             </div>
             <div class="map">
                 <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A123&source=constructor&pt=58.318,52.589&whatshere%5Bpoint%5D=58.318,52.589&whatshere%5Bzoom%5D=17&z=17&text=Республика%20Башкортостан%2C%20г.%20Баймак%2C%20ул.%20Горького%2C%2026" width="100%" height="100%" frameborder="0"></iframe>
@@ -398,38 +457,56 @@
         </div>
     </div>
 
-    <!-- НОВОСТИ -->
+    <!-- НОВОСТИ (без подписки) -->
     <div id="page-news" style="display: none;">
         <div class="container">
             <h2 class="section-title" style="margin-top: 40px;">Новости города Баймак</h2>
+            <div class="news-count" id="newsCount">Всего новостей: 10</div>
             <div class="news-list" id="newsList"></div>
-        </div>
-    </div>
-
-    <!-- ДОКУМЕНТЫ — ТАБЛИЦА ИСПРАВЛЕНА -->
-    <div id="page-docs" style="display: none;">
-        <div class="container">
-            <h2 class="section-title" style="margin-top: 40px;">Официальные документы</h2>
-            <div style="overflow-x: auto; border-radius: 16px;">
-                <table class="docs-table">
-                    <thead>
-                        <tr><th>Дата</th><th>Название документа</th><th>Ссылка</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>25.04.2026</td><td>Постановление №45 «О благоустройстве центрального парка»</td><td><a href="#">Скачать PDF</a></td></tr>
-                        <tr><td>20.04.2026</td><td>Решение Совета депутатов №12 «Об утверждении бюджета на 2026 год»</td><td><a href="#">Скачать PDF</a></td></tr>
-                        <tr><td>15.04.2026</td><td>Отчёт главы администрации за 2025 год</td><td><a href="#">Скачать PDF</a></td></tr>
-                        <tr><td>10.04.2026</td><td>Проект бюджета на 2027 год</td><td><a href="#">Скачать PDF</a></td></tr>
-                        <tr><td>05.04.2026</td><td>Постановление №38 «О графике отключения горячей воды на лето 2026»</td><td><a href="#">Скачать PDF</a></td></tr>
-                        <tr><td>01.04.2026</td><td>План работы администрации на апрель</td><td><a href="#">Скачать PDF</a></td></tr>
-                        <tr><td>28.03.2026</td><td>Изменения в штатное расписание</td><td><a href="#">Скачать PDF</a></td></tr>
-                        <tr><td>25.03.2026</td><td>Регламент приёма граждан</td><td><a href="#">Скачать PDF</a></td></tr>
-                    </tbody>
-                </table>
+            <div style="text-align: center; margin: 20px 0;">
+                <button id="showMoreBtn" class="btn-submit" style="background: #1E3A8A;">Показать ещё</button>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО -->
+    <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close"><span onclick="closeModal()">&times;</span></div>
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-date" id="modalDate"></div>
+            <div class="modal-text" id="modalText"></div>
+        </div>
+    </div>
+
+    <!-- ДОКУМЕНТЫ -->
+    <!-- ДОКУМЕНТЫ -->
+<div id="page-docs" style="display: none;">
+    <div class="container">
+        <h2 class="section-title" style="margin-top: 40px;">Официальные документы</h2>
+        <div style="overflow-x: auto; border-radius: 16px; margin: 30px 0;">
+            <table style="width: 100%; border-collapse: collapse; background: white; min-width: 500px;">
+                <thead>
+                    <tr style="background: #1E3A8A; color: white;">
+                        <th style="padding: 12px 15px; text-align: left;">Дата</th>
+                        <th style="padding: 12px 15px; text-align: left;">Название документа</th>
+                        <th style="padding: 12px 15px; text-align: left;">Ссылка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">25.04.2026</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">Постановление №45 «О благоустройстве центрального парка»</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;"><a href="#" style="color: #2563EB; text-decoration: none;">Скачать PDF</a></td></tr>
+                    <tr style="background: #F8FAFC;"><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">20.04.2026</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">Решение Совета депутатов №12 «Об утверждении бюджета на 2026 год»</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;"><a href="#" style="color: #2563EB; text-decoration: none;">Скачать PDF</a></td></tr>
+                    <tr><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">15.04.2026</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">Отчёт главы администрации за 2025 год</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;"><a href="#" style="color: #2563EB; text-decoration: none;">Скачать PDF</a></td></tr>
+                    <tr style="background: #F8FAFC;"><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">10.04.2026</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">Проект бюджета на 2027 год</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;"><a href="#" style="color: #2563EB; text-decoration: none;">Скачать PDF</a></td></tr>
+                    <tr><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">05.04.2026</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">Постановление №38 «О графике отключения горячей воды на лето 2026»</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;"><a href="#" style="color: #2563EB; text-decoration: none;">Скачать PDF</a></td></tr>
+                    <tr style="background: #F8FAFC;"><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">01.04.2026</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">План работы администрации на апрель</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;"><a href="#" style="color: #2563EB; text-decoration: none;">Скачать PDF</a></td></tr>
+                    <tr><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">28.03.2026</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">Изменения в штатное расписание</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;"><a href="#" style="color: #2563EB; text-decoration: none;">Скачать PDF</a></td></tr>
+                    <tr style="background: #F8FAFC;"><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">25.03.2026</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;">Регламент приёма граждан</td><td style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB;"><a href="#" style="color: #2563EB; text-decoration: none;">Скачать PDF</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
     <!-- ЗАПИСЬ НА ПРИЁМ -->
     <div id="page-appointment" style="display: none;">
         <div class="container">
@@ -456,12 +533,12 @@
         <div class="container">
             <h2 class="section-title" style="margin-top: 40px;">Часто задаваемые вопросы</h2>
             <div class="faq-list">
-                <div class="faq-item" onclick="toggleFaq(0)"><div class="faq-question">Как записаться на приём к главе администрации?<span class="arrow">▼</span></div><div class="faq-answer">Запись по телефону 8 (347) 123-45-60 или через форму на сайте.</div></div>
+                <div class="faq-item" onclick="toggleFaq(0)"><div class="faq-question">Как записаться на приём к главе администрации?<span class="arrow">▼</span></div><div class="faq-answer">Запись по телефону 8 (34751) 2-10-03 (доб. 210) или через форму на сайте.</div></div>
                 <div class="faq-item" onclick="toggleFaq(1)"><div class="faq-question">Какие документы нужны для получения субсидии на ЖКУ?<span class="arrow">▼</span></div><div class="faq-answer">Паспорт, документы на жильё, справки о доходах, квитанции за 6 месяцев.</div></div>
                 <div class="faq-item" onclick="toggleFaq(2)"><div class="faq-question">Куда сообщить о яме на дороге?<span class="arrow">▼</span></div><div class="faq-answer">Через раздел «Сообщить о проблеме» на главной странице или по телефону.</div></div>
-                <div class="faq-item" onclick="toggleFaq(3)"><div class="faq-question">Как получить разрешение на строительство?<span class="arrow">▼</span></div><div class="faq-answer">Обратитесь в отдел архитектуры. Телефон: 8 (347) 123-45-65.</div></div>
+                <div class="faq-item" onclick="toggleFaq(3)"><div class="faq-question">Как получить разрешение на строительство?<span class="arrow">▼</span></div><div class="faq-answer">Обратитесь в отдел архитектуры. Телефон: 8 (34751) 2-10-03 (доб. 120).</div></div>
                 <div class="faq-item" onclick="toggleFaq(4)"><div class="faq-question">Где скачать бланки заявлений?<span class="arrow">▼</span></div><div class="faq-answer">В разделе «Документы» на нашем сайте или в канцелярии.</div></div>
-                <div class="faq-item" onclick="toggleFaq(5)"><div class="faq-question">Режим работы администрации?<span class="arrow">▼</span></div><div class="faq-answer">Пн–пт: 8:00 – 18:00, обед: 12:30 – 14:00.</div></div>
+                <div class="faq-item" onclick="toggleFaq(5)"><div class="faq-question">Режим работы администрации?<span class="arrow">▼</span></div><div class="faq-answer">Пн–чт: 9:00 – 18:00, Пт: 9:00 – 16:45, обед: 13:00 – 13:45.</div></div>
             </div>
         </div>
     </div>
@@ -471,10 +548,27 @@
         <div class="container">
             <h2 class="section-title" style="margin-top: 40px;">Контакты администрации г. Баймак</h2>
             <div class="contacts-two-columns">
-                <div class="contacts-col"><h3>Контакты</h3><p><strong>Адрес:</strong> ул. Горького, 26, г. Баймак</p><p><strong>Телефон:</strong> 8 (347) 123-45-67</p><p><strong>Факс:</strong> 8 (347) 123-45-68</p><p><strong>Email:</strong> adm@baimak.ru</p><p><strong>Режим работы:</strong> Пн–пт: 8:00 – 18:00</p><p><strong>Обед:</strong> 12:30 – 14:00</p><p><strong>Сб–вс:</strong> выходной</p></div>
-                <div class="contacts-col"><h3>Приём граждан</h3><p><strong>Глава администрации:</strong> Ирек Сагитович Хисматуллин</p><p><strong>Дни и время:</strong> Вторник, четверг: 10:00 – 17:00</p><p><strong>Обед:</strong> 12:30 – 14:00</p><p><strong>Запись по телефону:</strong> 8 (347) 123-45-60</p></div>
+                <div class="contacts-col">
+                    <h3>Контакты</h3>
+                    <p><strong>Адрес:</strong> 453631, Республика Башкортостан, г. Баймак, ул. Горького, 26</p>
+                    <p><strong>Телефон:</strong> 8 (34751) 2-10-03</p>
+                    <p><strong>Факс:</strong> 8 (34751) 2-12-41</p>
+                    <p><strong>Email:</strong> adm@baimak.bashkortostan.ru</p>
+                    <p><strong>Сайт:</strong> baimak.bashkortostan.ru</p>
+                    <p><strong>Режим работы:</strong> Пн–чт: 9:00 – 18:00, Пт: 9:00 – 16:45, обед: 13:00 – 13:45</p>
+                </div>
+                <div class="contacts-col">
+                    <h3>Приём граждан</h3>
+                    <p><strong>Глава администрации:</strong> Хисматуллин Ирек Сагитович</p>
+                    <p><strong>Дни и время:</strong> Вторник, четверг: 10:00 – 17:00</p>
+                    <p><strong>Обед:</strong> 13:00 – 13:45</p>
+                    <p><strong>Запись по телефону:</strong> 8 (34751) 2-10-03 (доб. 210)</p>
+                </div>
             </div>
-            <div class="requisites"><h3>Банковские реквизиты</h3><p>ИНН: 1234567890 | КПП: 123401001 | ОГРН: 1234567890123 | ОКПО: 12345678</p></div>
+            <div class="requisites">
+                <h3>Банковские реквизиты</h3>
+                <p>ИНН: 1234567890 | КПП: 123401001 | ОГРН: 1234567890123 | ОКПО: 12345678</p>
+            </div>
             <div class="map">
                 <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A123&source=constructor&pt=58.318,52.589&whatshere%5Bpoint%5D=58.318,52.589&whatshere%5Bzoom%5D=17&z=17&text=Республика%20Башкортостан%2C%20г.%20Баймак%2C%20ул.%20Горького%2C%2026" width="100%" height="100%" frameborder="0"></iframe>
             </div>
@@ -520,25 +614,60 @@
 
 <script>
     const newsData = [
-        "25 июня 2026: В Баймаке стартовал летний фестиваль «Курай — душа Башкортостана»",
-        "22 июня 2026: День памяти и скорби: мероприятия у мемориала",
-        "20 июня 2026: Летний лагерь для 200 школьников открылся",
-        "18 июня 2026: Завершён ремонт дороги по улице Советской",
-        "15 июня 2026: Открытие нового скейт-парка в Городском парке",
-        "12 июня 2026: Концерт в честь Дня России на площади Салавата Юлаева",
-        "10 июня 2026: Опубликован график отключения горячей воды",
-        "8 июня 2026: Конкурс на лучшее благоустройство придомовых территорий",
-        "5 июня 2026: Приём граждан перенесён на 25 июня",
-        "1 июня 2026: Праздник ко Дню защиты детей в городском парке"
+        { title: "В Баймаке стартовал летний фестиваль «Курай — душа Башкортостана»", date: "25 июня 2026", text: "На площади Салавата Юлаева состоялось торжественное открытие ежегодного летнего фестиваля «Курай — душа Башкортостана». В мероприятии приняли участие творческие коллективы из Уфы, Сибая, Белорецка и других городов республики. Гостей фестиваля ждут концерты, мастер-классы по игре на курае, выставки декоративно-прикладного искусства, ярмарка народных промыслов и национальная кухня. Фестиваль продлится три дня. Вход свободный." },
+        { title: "День памяти и скорби: мероприятия у мемориала", date: "22 июня 2026", text: "22 июня в Баймаке прошли памятные мероприятия, посвящённые Дню памяти и скорби. У мемориала павшим воинам состоялась церемония возложения цветов и венков. В мероприятии приняли участие ветераны Великой Отечественной войны, труженики тыла, представители администрации города, школьники и студенты. В память о погибших была объявлена минута молчания. Вечером у мемориала прошла акция «Свеча памяти»." },
+        { title: "Летний лагерь для 200 школьников открылся на базе гимназии №1", date: "20 июня 2026", text: "На базе гимназии №1 начал работу летний оздоровительный лагерь дневного пребывания «Солнышко». В этом году лагерь примет 200 школьников в возрасте от 7 до 14 лет. Для детей подготовлена насыщенная программа: спортивные соревнования, экскурсии в краеведческий музей, творческие мастер-классы, просмотр познавательных фильмов и ежедневное двухразовое питание. Лагерь будет работать до 25 июля." },
+        { title: "Завершён ремонт дороги по улице Советской", date: "18 июня 2026", text: "В рамках национального проекта «Безопасные качественные дороги» завершился капитальный ремонт дорожного полотна на улице Советской. Работы выполнены на участке протяжённостью 2 километра — от пересечения с улицей Ленина до выезда из города. Подрядная организация уложила новый асфальт, установила бордюрные камни, нанесла разметку и заменила дорожные знаки. Движение открыто в полном объёме." },
+        { title: "Открытие нового скейт-парка в Городском парке", date: "15 июня 2026", text: "В Городском парке культуры и отдыха состоялось торжественное открытие нового скейт-парка. Скейт-парк оборудован современными фигурами для катания: рампами, перилами, трамплинами и зоной для начинающих. На территории установлены скамейки для отдыха и современное освещение для вечернего катания. Вход свободный." },
+        { title: "Концерт в честь Дня России на площади Салавата Юлаева", date: "12 июня 2026", text: "На площади Салавата Юлаева прошёл праздничный концерт, посвящённый Дню России. Перед зрителями выступили творческие коллективы города: народный хор, танцевальные ансамбли и солисты. Для детей были организованы аттракционы и игровые площадки. Завершился праздник салютом." },
+        { title: "Опубликован график отключения горячей воды на лето 2026", date: "10 июня 2026", text: "В связи с плановым ремонтом тепловых сетей с 1 июля по 15 августа будет отключено горячее водоснабжение. График отключений опубликован на официальном сайте администрации в разделе «Документы». Жителей просят с пониманием отнестись к временным неудобствам." },
+        { title: "Конкурс на лучшее благоустройство придомовых территорий", date: "8 июня 2026", text: "Администрация города объявляет конкурс на лучшее благоустройство придомовых территорий. Участвовать могут жители многоквартирных домов и частного сектора. Победители получат ценные призы и почётные грамоты. Заявки принимаются до 1 августа." },
+        { title: "Приём граждан перенесён на 25 июня", date: "5 июня 2026", text: "В связи с выездным совещанием главы администрации, личный приём граждан, запланированный на 18 июня, переносится на 25 июня. Приносим извинения за неудобства. Запись по телефону 8 (34751) 2-10-03 (доб. 210)." },
+        { title: "Праздник ко Дню защиты детей в городском парке", date: "1 июня 2026", text: "В Международный день защиты детей в городском парке прошёл большой праздник. Для детей были организованы конкурсы, викторины, аттракционы и сладкие призы. С поздравлениями выступили представители администрации и депутаты городского совета." }
     ];
+
+    let visibleNewsCount = 5;
 
     function renderNews() {
         const container = document.getElementById('newsList');
         if (!container) return;
-        container.innerHTML = newsData.map(item => {
-            const [date, ...titleArr] = item.split(': ');
-            return `<div class="news-item"><span class="news-date">${date}</span><span class="news-title">${titleArr.join(': ')}</span><a class="news-link">Читать →</a></div>`;
+        const visibleNews = newsData.slice(0, visibleNewsCount);
+        container.innerHTML = visibleNews.map((item, index) => {
+            return `<div class="news-item">
+                        <span class="news-date">${item.date}</span>
+                        <span class="news-title">${item.title}</span>
+                        <a class="news-link" onclick="openNewsModal(${index})">Читать →</a>
+                    </div>`;
         }).join('');
+        
+        const showMoreBtn = document.getElementById('showMoreBtn');
+        if (showMoreBtn) {
+            if (visibleNewsCount >= newsData.length) {
+                showMoreBtn.style.display = 'none';
+            } else {
+                showMoreBtn.style.display = 'inline-block';
+            }
+        }
+    }
+
+    function openNewsModal(index) {
+        const news = newsData[index];
+        document.getElementById('modalTitle').innerText = news.title;
+        document.getElementById('modalDate').innerText = news.date;
+        document.getElementById('modalText').innerText = news.text;
+        document.getElementById('newsModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('newsModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function showMoreNews() {
+        visibleNewsCount += 5;
+        if (visibleNewsCount > newsData.length) visibleNewsCount = newsData.length;
+        renderNews();
     }
 
     function setActive(page) {
@@ -563,7 +692,10 @@
         });
         document.getElementById(`page-${page}`).style.display = 'block';
         setActive(page);
-        if (page === 'news') renderNews();
+        if (page === 'news') {
+            visibleNewsCount = 5;
+            renderNews();
+        }
         window.scrollTo(0, 0);
         if (window.innerWidth <= 768) toggleMenu();
     }
@@ -599,6 +731,13 @@
             appointmentForm.reset();
         });
     }
+
+    document.getElementById('showMoreBtn')?.addEventListener('click', showMoreNews);
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
 
     showPage('home');
 </script>
